@@ -1,0 +1,479 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Cropify design system — "field notebook".
+ * Light: linen paper, forest ink, lime highlights (Carbonex / Vertical Garden).
+ * Dark: near-black instrument panels with pastel lime, mist and coral signals (Mount).
+ */
+
+@theme inline {
+  --font-sans: "DM Sans", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Jost", "DM Sans", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Jost", ui-sans-serif, system-ui, sans-serif;
+  /* Data labels read as UI text, not terminal output; real code blocks stay monospaced. */
+  --font-mono: "DM Sans", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
+  --default-mono-font-family: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 14px);
+  --radius-4xl: calc(var(--radius) + 22px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  /* brand */
+  --color-lime: var(--lime);
+  --color-lime-foreground: var(--lime-foreground);
+  --color-forest: #12352a;
+  --color-forest-2: #1f5a3c;
+  --color-linen: #f4f1e8;
+  --color-leaf: #b4d23f;
+  --color-ink: #17241c;
+
+  /* domain-signal tokens */
+  --color-healthy: var(--healthy);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-critical: var(--critical);
+  --color-water: var(--water);
+  --color-soil: var(--soil);
+  --color-neural: var(--neural);
+  --color-symbolic: var(--symbolic);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-glow: 0 18px 40px -18px color-mix(in oklab, var(--primary) 45%, transparent);
+  --shadow-panel: 0 1px 2px rgba(23, 36, 28, 0.04), 0 12px 32px -20px rgba(23, 36, 28, 0.18);
+
+  --animate-pulse-soft: pulse-soft 3.6s ease-in-out infinite;
+  --animate-flow: flow 4s linear infinite;
+  --animate-rise: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-dash: dash 2.4s linear infinite;
+  --animate-sway: sway 6s ease-in-out infinite;
+}
+
+:root {
+  --radius: 1rem;
+
+  --background: #f4f1e8;
+  --foreground: #17241c;
+  --surface: #fbf9f3;
+  --surface-2: #ebe7da;
+
+  --card: #fffdf8;
+  --card-foreground: #17241c;
+  --popover: #fffdf8;
+  --popover-foreground: #17241c;
+
+  --primary: #1f5a3c;
+  --primary-foreground: #f4f1e8;
+  --secondary: #e4ebc9;
+  --secondary-foreground: #1f3a26;
+  --muted: #ebe7dc;
+  --muted-foreground: #5f6a61;
+  --accent: #e7edcf;
+  --accent-foreground: #17241c;
+
+  --lime: #a9c83c;
+  --lime-foreground: #14261a;
+
+  --destructive: #c9482c;
+  --destructive-foreground: #fff8f2;
+
+  --border: #ddd7c6;
+  --input: #e2dccc;
+  --ring: #a9c83c;
+
+  --healthy: #3a8a4d;
+  --warning: #c4861a;
+  --warning-foreground: #2a1c05;
+  --critical: #cf5434;
+  --water: #3a83a3;
+  --soil: #996737;
+  --neural: #2c7a73;
+  --symbolic: #74689f;
+
+  --chart-1: #3a8a4d;
+  --chart-2: #3a83a3;
+  --chart-3: #c4861a;
+  --chart-4: #cf5434;
+  --chart-5: #74689f;
+
+  --chart-grid: rgba(23, 36, 28, 0.07);
+  --chart-axis: #6b756c;
+
+  --sidebar: #12352a;
+  --sidebar-foreground: #e8ecd8;
+  --sidebar-primary: #c3df5a;
+  --sidebar-primary-foreground: #12261a;
+  --sidebar-accent: #1b4334;
+  --sidebar-accent-foreground: #f4f1e8;
+  --sidebar-border: #24503e;
+  --sidebar-ring: #c3df5a;
+}
+
+:root.dark,
+html.dark,
+.dark {
+  color-scheme: dark;
+
+  --background: #0b0c0b;
+  --foreground: #ebeee3;
+  --surface: #141614;
+  --surface-2: #1b1e1b;
+
+  --card: #131513;
+  --card-foreground: #ebeee3;
+  --popover: #161816;
+  --popover-foreground: #ebeee3;
+
+  --primary: #cde27f;
+  --primary-foreground: #121410;
+  --secondary: #222620;
+  --secondary-foreground: #ebeee3;
+  --muted: #1c1f1c;
+  --muted-foreground: #9aa196;
+  --accent: #232821;
+  --accent-foreground: #ebeee3;
+
+  --lime: #cde27f;
+  --lime-foreground: #121410;
+
+  --destructive: #ef6b4d;
+  --destructive-foreground: #140a06;
+
+  --border: #262a25;
+  --input: #1f231f;
+  --ring: #cde27f;
+
+  --healthy: #b9d86c;
+  --warning: #e9b14d;
+  --warning-foreground: #1c1203;
+  --critical: #ef6b4d;
+  --water: #92c5d6;
+  --soil: #c99c6a;
+  --neural: #84cbbd;
+  --symbolic: #b6abe2;
+
+  --chart-1: #b9d86c;
+  --chart-2: #92c5d6;
+  --chart-3: #e9b14d;
+  --chart-4: #ef6b4d;
+  --chart-5: #b6abe2;
+
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-axis: #8d948a;
+
+  --sidebar: #101210;
+  --sidebar-foreground: #ebeee3;
+  --sidebar-primary: #cde27f;
+  --sidebar-primary-foreground: #121410;
+  --sidebar-accent: #1c1f1c;
+  --sidebar-accent-foreground: #ebeee3;
+  --sidebar-border: #232722;
+  --sidebar-ring: #cde27f;
+
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: var(--lime);
+    color: var(--lime-foreground);
+  }
+}
+
+@utility panel {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-panel);
+}
+
+@utility glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+@utility glass-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-panel);
+}
+
+@utility glass-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+}
+
+@utility metric {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility label-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Fine film grain used on the landing page illustrations (Carbonex texture). */
+@utility grain {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(calc(var(--r, 0deg) + 4deg));
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes flow {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+@media print {
+  /* Prevent browser from stripping background colors and graphics */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    --chart-grid: #e2e8f0 !important;
+    --chart-axis: #475569 !important;
+  }
+
+  /* Hide toast notifications in print output */
+  [data-sonner-toaster],
+  .sonner-toast,
+  .toast {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  @page {
+    margin: 0.8cm;
+  }
+
+  #cropify-report-pdf-capture {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    padding: 30px !important;
+    border-radius: 12px !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  #cropify-report-pdf-capture h2 {
+    color: #0f172a !important;
+  }
+
+  #cropify-report-pdf-capture h3 {
+    color: #16a34a !important; /* forest green print color */
+    border-bottom: 1.5px solid #e2e8f0 !important;
+  }
+
+  #cropify-report-pdf-capture p,
+  #cropify-report-pdf-capture span,
+  #cropify-report-pdf-capture strong,
+  #cropify-report-pdf-capture li {
+    color: #334155 !important;
+  }
+
+  #cropify-report-pdf-capture .text-primary {
+    color: #16a34a !important;
+  }
+
+  #cropify-report-pdf-capture .text-critical {
+    color: #b91c1c !important;
+  }
+
+  #cropify-report-pdf-capture .text-warning {
+    color: #d97706 !important;
+  }
+
+  #cropify-report-pdf-capture .text-muted-foreground {
+    color: #64748b !important;
+  }
+
+  #cropify-report-pdf-capture .border-border\/60,
+  #cropify-report-pdf-capture .border-border\/25,
+  #cropify-report-pdf-capture .border-border\/20,
+  #cropify-report-pdf-capture .border-border\/40 {
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Force all panel components, list items, and primary panels to light background & clean borders */
+  #cropify-report-pdf-capture .panel,
+  #cropify-report-pdf-capture li,
+  #cropify-report-pdf-capture [class*="bg-primary/5"],
+  #cropify-report-pdf-capture [class*="bg-background"] {
+    background-color: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  #cropify-report-pdf-capture .bg-warning\/5,
+  #cropify-report-pdf-capture [class*="bg-warning"] {
+    background-color: #fffbeb !important;
+    border: 1px solid #fef3c7 !important;
+  }
+
+  #cropify-report-pdf-capture .bg-warning\/5 p,
+  #cropify-report-pdf-capture [class*="bg-warning"] p {
+    color: #92400e !important;
+  }
+
+  #cropify-report-pdf-capture .bg-warning\/5 strong,
+  #cropify-report-pdf-capture [class*="bg-warning"] strong {
+    color: #78350f !important;
+  }
+
+  /* Decorative header color band at the top of A4 page */
+  #cropify-report-pdf-capture .absolute {
+    background: #16a34a !important;
+  }
+}
+
+/* Devanagari (Hindi / Marathi): wide tracking splits conjunct letters apart. */
+html:is(:lang(hi), :lang(mr)) [data-app-shell] * {
+  letter-spacing: normal !important;
+}

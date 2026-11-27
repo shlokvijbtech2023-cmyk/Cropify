@@ -1,0 +1,164 @@
+import { useState } from "react";
+import { zones, type Zone } from "@/lib/agri-data";
+import { cn } from "@/lib/utils";
+import { Chip, Meter } from "./primitives";
+import { tr } from "@/lib/i18n";
+
+const stateStyle: Record<
+  Zone["state"],
+  { fill: string; ring: string; label: string; tone: "healthy" | "warning" | "critical" | "water" }
+> = {
+  healthy: { fill: "bg-healthy/15", ring: "border-healthy/45", label: "Healthy", tone: "healthy" },
+  stress: { fill: "bg-warning/15", ring: "border-warning/50", label: "Stress", tone: "warning" },
+  disease: {
+    fill: "bg-critical/15",
+    ring: "border-critical/55",
+    label: "Disease",
+    tone: "critical",
+  },
+  irrigation: { fill: "bg-water/15", ring: "border-water/50", label: "Irrigation", tone: "water" },
+};
+
+function CropRows({ state }: { state: Zone["state"] }) {
+  const color =
+    state === "disease"
+      ? "bg-critical/45"
+      : state === "stress"
+        ? "bg-warning/45"
+        : state === "irrigation"
+          ? "bg-water/45"
+          : "bg-healthy/45";
+  return (
+    <div className="pointer-events-none absolute inset-2 flex flex-col justify-between opacity-70">
+      {Array.from({ length: 6 }).map((_, r) => (
+        <div key={r} className="flex justify-between">
+          {Array.from({ length: 10 }).map((__, c) => (
+            <span
+              key={c}
+              className={cn("size-1 rounded-full", color)}
+              style={{
+                animation: `pulse-soft ${3 + ((r + c) % 4) * 0.6}s ease-in-out ${(r + c) * 0.08}s infinite`,
+              }}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function FieldMap({ compact = false }: { compact?: boolean }) {
+  const [selected, setSelected] = useState<Zone | null>(zones[2] ?? null);
+
+  return (
+    <div className={cn("grid gap-5", compact ? "" : "lg:grid-cols-[1.6fr_1fr]")}>
+      <div className="panel relative overflow-hidden p-4">
+        <div
+          className="relative w-full overflow-hidden rounded-xl border border-border/70"
+          style={{
+            aspectRatio: "16 / 10",
+            backgroundImage:
+              "linear-gradient(180deg, oklch(0.18 0.03 250 / 0.85), oklch(0.14 0.025 250 / 0.98)), repeating-linear-gradient(90deg, oklch(1 0 0 / 0.04) 0 1px, transparent 1px 28px), repeating-linear-gradient(0deg, oklch(1 0 0 / 0.04) 0 1px, transparent 1px 28px)",
+          }}
+        >
+          {zones.map((z) => {
+            const s = stateStyle[z.state];
+            const active = selected?.id === z.id;
+            return (
+              <button
+                key={z.id}
+                onClick={() => setSelected(z)}
+                className={cn(
+                  "absolute rounded-md border text-left transition-all duration-300 hover:scale-[1.02]",
+                  s.fill,
+                  s.ring,
+                  active && "ring-2 ring-primary/70",
+                )}
+                style={{ left: `${z.x}%`, top: `${z.y}%`, width: `${z.w}%`, height: `${z.h}%` }}
+              >
+                <CropRows state={z.state} />
+                <span className="absolute top-1.5 left-2 font-mono text-[0.6rem] tracking-wider text-foreground/80">
+                  {tr(z.label)}
+                </span>
+                <span className="absolute right-2 bottom-1.5 metric text-sm">{tr(z.health)}</span>
+              </button>
+            );
+          })}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background/70 to-transparent" />
+          <span className="glass absolute right-3 bottom-3 rounded-md px-2.5 py-1 font-mono text-[0.6rem] tracking-wider">
+            {tr("WEATHER OVERLAY · 27°C · RH 91%")}
+          </span>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {(Object.keys(stateStyle) as Zone["state"][]).map((k) => (
+            <Chip key={k} tone={stateStyle[k].tone}>
+              {tr(stateStyle[k].label)} {tr("zones")}
+            </Chip>
+          ))}
+        </div>
+
+        {compact && selected && (
+          <div className="mt-3 pt-3 border-t border-border/50 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-foreground">{tr(selected.label)}</span>
+              <Chip tone={stateStyle[selected.state].tone} className="text-[0.65rem]">
+                {tr(stateStyle[selected.state].label)}
+              </Chip>
+            </div>
+            <span className="font-mono text-muted-foreground text-[0.7rem]">
+              {tr("Health:")} {tr(selected.health)}
+              {tr("% • Moisture:")} {tr(selected.moisture)}% • {tr(selected.soil)}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {!compact && (
+        <div className="panel p-5">
+          {selected ? (
+            <div className="animate-rise">
+              <p className="label-eyebrow">{tr("Zone inspector")}</p>
+              <h3 className="mt-1 text-xl font-semibold">{tr(selected.label)}</h3>
+              <Chip tone={stateStyle[selected.state].tone} className="mt-2">
+                {tr(stateStyle[selected.state].label)}
+              </Chip>
+              <div className="mt-5 space-y-3">
+                <Meter label={tr("Zone health")} value={selected.health} tone="healthy" />
+                <Meter label={tr("Soil moisture")} value={selected.moisture} tone="water" />
+                <Meter
+                  label={tr("Disease probability")}
+                  value={selected.diseaseProb}
+                  tone={selected.diseaseProb > 50 ? "critical" : "warning"}
+                />
+              </div>
+              <dl className="mt-5 space-y-3 text-sm">
+                <div>
+                  <dt className="label-eyebrow">{tr("Soil condition")}</dt>
+                  <dd className="mt-1">{tr(selected.soil)}</dd>
+                </div>
+                <div>
+                  <dt className="label-eyebrow">{tr("Crop condition")}</dt>
+                  <dd className="mt-1 text-muted-foreground">{tr(selected.condition)}</dd>
+                </div>
+                <div>
+                  <dt className="label-eyebrow">{tr("Recommended action")}</dt>
+                  <dd className="mt-1">{tr(selected.action)}</dd>
+                </div>
+                <div className="rounded-lg border border-border bg-muted/30 p-3">
+                  <dt className="label-eyebrow">{tr("Reasoning")}</dt>
+                  <dd className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {tr(selected.reasoning)}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {tr("Select a field zone to inspect it.")}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
